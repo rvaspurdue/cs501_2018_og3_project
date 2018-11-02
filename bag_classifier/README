@@ -1,0 +1,29 @@
+# Code overview
+# Source: https://www.pyimagesearch.com/2018/04/16/keras-and-convolutional-neural-networks-cnns/
+# Code is a slightly modified version of the above
+
+bagclassifier.py - The Keras model
+train.py - For pre-processing images and training the model
+classify.py - References the model to make predictions for an image
+
+# Install conda for your OS
+
+https://conda.io/docs/user-guide/install/index.html
+
+# Set up the environment
+I included a spec file called spec-file.txt what can be used to create the
+exact environment I used to build and run the classifier
+
+https://conda.io/docs/user-guide/tasks/manage-environments.html#building-identical-conda-environments
+
+conda create --name cs501 --file spec-file.txt
+
+Then you need to use pip to install the 'imutils' package
+
+pip install imutils
+
+# Run the classifier
+
+python3 classify.py -m bagclassifier.model -l labels.bin -i erik_carryon_front.jpg
+
+
