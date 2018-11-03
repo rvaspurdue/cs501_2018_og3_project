@@ -34,6 +34,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 # import dimension code as bagDim
+import bagDimV2
 # import classification code as bagClassify
 
 class StartWindow(QMainWindow):
@@ -59,7 +60,7 @@ class StartWindow(QMainWindow):
                    'Length':999,
                    'Width':999,}
         
-        self.bagClass = {'Classification': 'Its a Bag'}        
+        self.bagClass = {'Classification': 'Model Connection in Work'}        
         
     def initUI(self):
         
@@ -408,11 +409,13 @@ class StartWindow(QMainWindow):
              
             # Nick pass self.camData to your function and return bag 
             # Dimension module results:
-            # self.bagDimensions = bagDim.<fcnName>(self.camdata)
+            self.bagDimensions = bagDimV2.run(self.camData)
             # example to output to GUI (assign results here):            
             self.bagHeight.setText(str(self.bagDimensions['Height']))
             self.bagLength.setText(str(self.bagDimensions['Length']))
             self.bagWidth.setText(str(self.bagDimensions['Width']))
+            
+            print(self.bagDimensions)
              
             # Erik let me know what needs to be passed to your function
             # self.bagClass = bagClassify.<fcnName>(self.____________)
@@ -421,6 +424,7 @@ class StartWindow(QMainWindow):
             # Show result frame
             self.dimFrame.show()
             self.classFrame.show()
+            
             
 ############################ End Class ########################################        
 # Run GUI        
