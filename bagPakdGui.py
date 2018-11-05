@@ -36,6 +36,7 @@ from PyQt5.QtCore import *
 # import dimension code as bagDim
 import bagDimV2
 # import classification code as bagClassify
+from bag_classifier import bagClassify
 
 class StartWindow(QMainWindow):
     
@@ -418,8 +419,12 @@ class StartWindow(QMainWindow):
             print(self.bagDimensions)
              
             # Erik let me know what needs to be passed to your function
-            # self.bagClass = bagClassify.<fcnName>(self.____________)
-            self.bagClassification.setText(self.bagClass['Classification'])
+            model_path = "./bag_classifier/bagclassifier.model"
+            label_path = "./bag_classifier/labels.bin"
+            print(self.lf1.text())
+            self.bagClass = bagClassify.classifyImage(self.lf1.text(), model_path, label_path)
+            print(self.bagClass)
+            self.bagClassification.setText(self.bagClass[0] + " (" + str(self.bagClass[1]) + "%)")
             
             # Show result frame
             self.dimFrame.show()
