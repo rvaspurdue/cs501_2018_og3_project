@@ -37,6 +37,10 @@ from PyQt5.QtCore import *
 import bagDimV2
 # import classification code as bagClassify
 from bag_classifier import bagClassify
+# parallel processing libraries
+from joblib import Parallel, delayed
+import multiprocessing
+from collections import Counter
 
 class StartWindow(QMainWindow):
     
@@ -418,13 +422,30 @@ class StartWindow(QMainWindow):
             
             print(self.bagDimensions)
              
-            # Erik let me know what needs to be passed to your function
-            model_path = "./bag_classifier/bagclassifier.model"
-            label_path = "./bag_classifier/labels.bin"
+            # Set up the paths to the models and labels
+            models = ["bag_inceptionv3.model", "bagclassifier.model", "bag_xception.model"]
+            path = "./bag_classifier"
+            labels = "labels.bin"
             print(self.lf1.text())
-            self.bagClass = bagClassify.classifyImage(self.lf1.text(), model_path, label_path)
+            
+            # run the 3 classifications in parallel to reduce processing time
+            classification_results = Parallel(n_jobs=3)(delayed(bagClassify.classifyImage)(path, self.lf1.text(), m, labels) for m in models)
+            probabilities = [r[1] for r in classification_results]
+            classifications = [r[0] for r in classification_results]
+            
+            # find the classification that occurs the most out of
+            # the three models, or return the single classification
+            # with the highest probability
+            probabilities_tup, classifications_tup = zip(*sorted(zip(probabilities, classifications), reverse=True))
+            classification,num_classification = Counter(classifications_tup).most_common(1)[0]
+            print(classification,num_classification)
+
+            # assign the final classification
+            self.bagClass = classification
             print(self.bagClass)
-            self.bagClassification.setText(self.bagClass[0] + " (" + str(self.bagClass[1]) + "%)")
+
+            # update the GUI text
+            self.bagClassification.setText(self.bagClass + " " + str(round(probabilities_tup[0],1)) + "%")
             
             # Show result frame
             self.dimFrame.show()
