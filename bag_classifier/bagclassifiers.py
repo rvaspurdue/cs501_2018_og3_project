@@ -1,5 +1,12 @@
-# classifer was built using this reference
+# smallervgg16 classifer was built using this reference
 # https://www.pyimagesearch.com/2018/04/16/keras-and-convolutional-neural-networks-cnns/
+
+import keras
+from keras.applications import vgg16
+from keras.applications import vgg19
+from keras.applications import xception
+from keras.applications import densenet
+from keras.applications import inception_v3
 
 from keras.models import Sequential
 from keras.layers.normalization import BatchNormalization
@@ -11,9 +18,9 @@ from keras.layers.core import Dropout
 from keras.layers.core import Dense
 from keras import backend as K
 
-class bagclassifier:
+class bagclassifiers:
     @staticmethod
-    def build(height, width, depth, classes):
+    def build_smallervgg16(height, width, depth, classes):
         model = Sequential()
         input_shape = (height, width, depth)
 
@@ -47,5 +54,42 @@ class bagclassifier:
         model.add(Dense(num_classes))
         model.add(Activation("softmax"))
 
+        return model
+
+    @staticmethod
+    def build_vgg16(classes):
+        model = vgg16.VGG16(include_top=True,
+                            weights=None,
+                            input_tensor=None,
+                            input_shape=None,
+                            pooling=None,
+                            classes=classes)
+        return model
+
+    def build_vgg19(classes):
+        model = vgg19.VGG19(include_top=True,
+                            weights=None,
+                            input_tensor=None,
+                            input_shape=None,
+                            pooling=None,
+                            classes=classes)
+        return model
+
+    def build_xception(classes):
+        model = xception.Xception(include_top=True,
+                            weights=None,
+                            input_tensor=None,
+                            input_shape=None,
+                            pooling=None,
+                            classes=classes)
+        return model
+
+    def build_inception(classes):
+        model = inception_v3.InceptionV3(include_top=True,
+                            weights=None,
+                            input_tensor=None,
+                            input_shape=None,
+                            pooling=None,
+                            classes=classes)
         return model
 

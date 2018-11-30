@@ -20,7 +20,7 @@ import cv2
 import os
 
 # import our classifier
-from bagclassifier import bagclassifier
+from bagclassifiers import bagclassifiers
 
 # initialize the number of epochs to train for, initial learning rate,
 # batch size, and image dimensions
@@ -28,7 +28,9 @@ EPOCHS = 100
 INIT_LR = 1e-3
 BS = 32
 IMAGE_DIMS = (96, 96, 3)
- 
+#IMAGE_DIMS = (224, 224, 3)
+#IMAGE_DIMS = (299, 299, 3)
+
 # initialize the data and labels
 data = []
 labels = []
@@ -53,6 +55,7 @@ for imagePath in imagePaths:
     # labels list
     label = imagePath.split(os.path.sep)[-2]
     labels.append(label)
+    print(label)
 
 # scale the raw pixel intensities to the range [0, 1]
 data = np.array(data, dtype="float") / 255.0
@@ -76,6 +79,11 @@ aug = ImageDataGenerator(rotation_range=25, width_shift_range=0.1,
 print("[INFO] compiling model...")
 model = bagclassifier.build(width=IMAGE_DIMS[1], height=IMAGE_DIMS[0],
 	                 depth=IMAGE_DIMS[2], classes=len(lb.classes_))
+#model = bagclassifier_vgg16.build(classes=len(lb.classes_))
+#model = newmodels.build_vgg19(4)
+#model = newmodels.build_xception(4)
+#model = newmodels.build_inception(4)
+
 opt = Adam(lr=INIT_LR, decay=INIT_LR / EPOCHS)
 model.compile(loss="categorical_crossentropy", optimizer=opt, metrics=["accuracy"])
  
