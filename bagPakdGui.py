@@ -34,7 +34,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 # import dimension code as bagDim
-import bagDimV2
+from bag_detection import bagDimV3
 # import classification code as bagClassify
 from bag_classifier import bagClassify
 # parallel processing libraries
@@ -414,7 +414,7 @@ class StartWindow(QMainWindow):
              
             # Nick pass self.camData to your function and return bag 
             # Dimension module results:
-            self.bagDimensions = bagDimV2.run(self.camData)
+            self.bagDimensions = bagDimV3.run(self.camData, self.lf1.text(), self.lf2.text(), self.lf3.text(), self.lf4.text())
             # example to output to GUI (assign results here):            
             self.bagHeight.setText(str(self.bagDimensions['Height']))
             self.bagLength.setText(str(self.bagDimensions['Length']))
