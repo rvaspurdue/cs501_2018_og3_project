@@ -1,0 +1,15 @@
+# Code overview
+# Code within the MRCNN folder source can be found below:
+# https://github.com/matterport/Mask_RCNN
+#
+# bag_box.py was built using examples and Small pieces of code from the following Mask R-CNN example:
+# https://github.com/matterport/Mask_RCNN/blob/master/samples/balloon/balloon.py
+#
+# https://engineering.matterport.com/splash-of-color-instance-segmentation-with-mask-r-cnn-and-tensorflow-7c761e238b46
+#
+# bagDimV3 calculates bag dimensions based upon camera information provided by the GUI and objection detection information provided by the 
+# bag_box.py script
+
+
+
+
