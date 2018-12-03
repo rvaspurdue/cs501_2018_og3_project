@@ -9,6 +9,8 @@
 #
 # bagDimV3 calculates bag dimensions based upon camera information provided by the GUI and objection detection information provided by the 
 # bag_box.py script
+#
+# weights were developed based upon training the Mask R-CNN model on 101 test images of bags and 20 validation images.
 
 
 
