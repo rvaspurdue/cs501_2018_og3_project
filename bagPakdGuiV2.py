@@ -396,7 +396,10 @@ class StartWindow(QMainWindow):
     # Function that is run when the calculate button is clicked    
     def runBagpakd(self):
         try:
-            self.camData['deltaImageDist']=float(self.q1.text())
+            if self.mode == 1:
+                self.camData['objectDist']=float(self.q1.text())
+            else:
+                self.camData['deltaImageDist']=float(self.q1.text())
             self.camData['camFocalLength']=float(self.q2.text())
             self.camData['camVerticalPixelCount']=float(self.q3.text())
             self.camData['camHorizontalPixelCount']=float(self.q4.text())
@@ -411,7 +414,7 @@ class StartWindow(QMainWindow):
             # Dimension module results:
             # self.mode = 1 for pitch mode
             # self.mode = 2 for dual image mode
-            self.bagDimensions = bagDimV3.run(self.camData, self.lf1.text(), self.lf2.text(), self.lf3.text(), self.lf4.text())
+            self.bagDimensions = bagDimV3.run(self.camData, self.lf1.text(),self.lf2.text(),self.mode)
             # example to output to GUI (assign results here):            
             self.bagHeight.setText(str(self.bagDimensions['Height']))
             self.bagLength.setText(str(self.bagDimensions['Length']))
