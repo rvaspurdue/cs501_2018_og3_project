@@ -41,6 +41,7 @@ from bag_classifier import bagClassify
 from joblib import Parallel, delayed
 import multiprocessing
 from collections import Counter
+import gdriveSync as gd
 
 class StartWindow(QMainWindow):
     
@@ -116,6 +117,15 @@ class StartWindow(QMainWindow):
         self.actionR2.triggered.connect(lambda: self.rotateImage(2))
         self.tb.addAction(self.actionR2)
         
+        # Define Action to sync Google Drive
+        self.actionSync = QAction('Sync')
+        self.actionSync.setStatusTip('Sync Google Drive')
+        self.actionSync.triggered.connect(self.sync)
+        self.tb.addAction(self.actionSync)
+        
+        # Set local folder path where google drive contents are downloaded
+        self.gdrive = os.path.join(os.getcwd(),'GoogleDriveContents')
+        
         # Create file explorer model
         self.fileExplorerModel = QFileSystemModel()
         self.fileExplorerModel.setRootPath(QDir.rootPath())
@@ -126,7 +136,9 @@ class StartWindow(QMainWindow):
         self.fileViewer.clicked.connect(self.openImage)
         self.fileViewer.setMinimumSize(420,490)
         self.fileViewer.move(10,80)
-        self.fileViewer.hide()
+        self.fileViewer.setRootIndex(self.fileExplorerModel.index(self.gdrive))
+        self.fileViewer.hideColumn(1)
+        self.fileViewer.show()
         
         # Define label for image 1 (lb) and filename label (lf) 
         self.lf1=QLabel(self)
@@ -160,13 +172,13 @@ class StartWindow(QMainWindow):
         
         # Define camera variables label and input field for var 1
         self.camLb1=QLabel(self)
-        self.camLb1.setText('Object Distance [m]')
+        self.camLb1.setText('Object Distance [ft]')
         self.camLb1.move(50,600)
         self.camLb1.setMinimumWidth(200)
         self.q1=QLineEdit(self)
         self.q1.move(250,600)
         self.q1.resize(50,20)
-        self.q1.setStatusTip('Enter distance between images in meters')
+        self.q1.setStatusTip('Distance')
         self.camLb1.hide()
         self.q1.hide()
         self.q1.textChanged.connect(self.chkCamInput)
@@ -222,6 +234,18 @@ class StartWindow(QMainWindow):
         self.camLb5.hide()
         self.q5.hide()
         self.q5.textChanged.connect(self.chkCamInput)
+        
+        self.camLb1.show()
+        self.q1.show()
+        self.camLb2.show()
+        self.q2.show()
+        self.camLb3.show()
+        self.q3.show()
+        self.camLb4.show()
+        self.q4.show()
+        self.camLb5.show()
+        self.q5.show()
+        self.camFrame.show()
                 
         # Define Dimension Results frame 
         self.dimFrame = QFrame(self)        
@@ -292,6 +316,9 @@ class StartWindow(QMainWindow):
         
 ############################## Class Methods #################################
     
+    def sync(self):
+        gd.sync()
+    
     def pmToggle(self,state):
         if state:
             self.actionPm.setChecked(True)
@@ -346,9 +373,43 @@ class StartWindow(QMainWindow):
         self.camLb5.show()
         self.q5.show()
         self.camFrame.show()
+   
+    def getSensorFile(self,imageName):
+        files = [f for f in os.listdir(self.gdrive) if os.path.isfile(os.path.join(self.gdrive,f))]
+        imgSplit = imageName.split('_')
+        
+        for f in files:
+            sensorSplit = f.split('_')
+            if 'Sensor' in sensorSplit[0]:
+                if imgSplit[1] == sensorSplit[1]:
+                    if imgSplit[-1][0:5] == sensorSplit[-1][0:5]:
+                        sensorFileName = f
+                        break;
+        return sensorFileName
     
+    def getObjectDistance(self,sensorFileName):
+        f =  open(os.path.join(self.gdrive,sensorFileName),'r')
+        data = f.read() 
+        f.close()
+        objectDistance = data.split(',')[-1] 
+        return objectDistance
+                
     # Define slot function openImage 
     def openImage(self,index):
+        
+        if self.mode == 1:
+            imageName = self.fileExplorerModel.fileName(index)        
+            try:
+                sensorFileName = self.getSensorFile(imageName)
+            except:
+                pass
+            else:
+                objectDistance = self.getObjectDistance(sensorFileName)
+                objectDistance = round(float(objectDistance),4) 
+                self.q1.setText(str(objectDistance))
+        else:
+            self.q1.setText(str('0.2'))
+
         if self.imgPos==1:
             self.imageFile = self.fileExplorerModel.fileInfo(index).absoluteFilePath()
             self.lf1.setText(self.imageFile);
