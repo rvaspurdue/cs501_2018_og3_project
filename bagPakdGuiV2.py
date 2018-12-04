@@ -473,12 +473,21 @@ class StartWindow(QMainWindow):
              
             # Nick pass self.camData to your function and return bag 
             # Dimension module results:
-            # self.mode = 1 for pitch mode
-            # self.mode = 2 for dual image mode
-            self.bagDimensions = bagDimV3.run(self.camData, self.lf1.text(),self.lf2.text(),self.mode)
+            
+            if self.mode ==1:
+                # self.mode = 1 for pitch mode
+                self.bagDimensions = bagDimV3.run(self.camData, self.mode, self.lf1.text())
+
+            elif self.mode == 2:
+                # self.mode = 2 for dual image mode
+                self.bagDimensions = bagDimV3.run(self.camData, self.mode, self.lf1.text(),self.lf2.text())
+
+            else:
+                print("Cannot determine the GUI mode for dimensional calculations.")
+
             # example to output to GUI (assign results here):            
             self.bagHeight.setText(str(self.bagDimensions['Height']))
-            self.bagLength.setText(str(self.bagDimensions['Length']))
+            #self.bagLength.setText(str(self.bagDimensions['Length']))
             self.bagWidth.setText(str(self.bagDimensions['Width']))
             
             print(self.bagDimensions)

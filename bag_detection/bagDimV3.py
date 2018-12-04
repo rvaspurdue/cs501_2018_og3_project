@@ -64,23 +64,30 @@ def getBagBox(path):
     return dims
     
 
-def run(camdata, bag1path, bag2path, bag3path, bag4path):
+def run(camdata, mode, bag1path, bag2path = 'optional' ):
     """Function runs the bag dimensional calculator."""
+    
+    print(camdata)
     
     # Adding object height and width into the camera data dictionary [pixels].
     obj_01_dims = getBagBox(bag1path)
     camdata['obj_01_height'] = obj_01_dims[0]
     camdata['obj_01_width'] = obj_01_dims[1]
-    obj_02_dims = getBagBox(bag2path)
-    camdata['obj_02_height'] = obj_02_dims[0]
-    camdata['obj_02_width'] = obj_02_dims[1]
 
-    obj_03_dims = getBagBox(bag3path)
-    camdata['obj_03_height'] = obj_03_dims[0]
-    camdata['obj_03_width'] = obj_03_dims[1]
-    obj_04_dims = getBagBox(bag4path)
-    camdata['obj_04_height'] = obj_04_dims[0]
-    camdata['obj_04_width'] = obj_04_dims[1]
+    if mode == 1:
+        objectDist = camdata['objectDist']
+    
+    if mode == 2:
+        obj_02_dims = getBagBox(bag2path)
+        camdata['obj_02_height'] = obj_02_dims[0]
+        camdata['obj_02_width'] = obj_02_dims[1]
+
+    # obj_03_dims = getBagBox(bag3path)
+    # camdata['obj_03_height'] = obj_03_dims[0]
+    # camdata['obj_03_width'] = obj_03_dims[1]
+    # obj_04_dims = getBagBox(bag4path)
+    # camdata['obj_04_height'] = obj_04_dims[0]
+    # camdata['obj_04_width'] = obj_04_dims[1]
 
     # Feed data into the getObjAngle function.
     object1_angle = [None, None]
@@ -88,29 +95,36 @@ def run(camdata, bag1path, bag2path, bag3path, bag4path):
     object1_angle[0] = getObjAngle(sensor_dim[0], camdata.get('camFocalLength'), camdata.get('obj_01_height'), camdata.get('camVerticalPixelCount'))
     object1_angle[1] = getObjAngle(sensor_dim[1], camdata.get('camFocalLength'), camdata.get('obj_01_width'), camdata.get('camHorizontalPixelCount'))
     
-    object2_angle = [None, None]
-    object2_angle[0] = getObjAngle(sensor_dim[0], camdata.get('camFocalLength'), camdata.get('obj_02_height'), camdata.get('camVerticalPixelCount'))
-    object2_angle[1] = getObjAngle(sensor_dim[1], camdata.get('camFocalLength'), camdata.get('obj_02_width'), camdata.get('camHorizontalPixelCount'))
+    if mode == 2:
+        object2_angle = [None, None]
+        object2_angle[0] = getObjAngle(sensor_dim[0], camdata.get('camFocalLength'), camdata.get('obj_02_height'), camdata.get('camVerticalPixelCount'))
+        object2_angle[1] = getObjAngle(sensor_dim[1], camdata.get('camFocalLength'), camdata.get('obj_02_width'), camdata.get('camHorizontalPixelCount'))
 
-    object3_angle = [None, None]
-    object3_angle[0] = getObjAngle(sensor_dim[0], camdata.get('camFocalLength'), camdata.get('obj_03_height'), camdata.get('camVerticalPixelCount'))
-    object3_angle[1] = getObjAngle(sensor_dim[1], camdata.get('camFocalLength'), camdata.get('obj_03_width'), camdata.get('camHorizontalPixelCount'))
-
-    object4_angle = [None, None]
-    object4_angle[0] = getObjAngle(sensor_dim[0], camdata.get('camFocalLength'), camdata.get('obj_04_height'), camdata.get('camVerticalPixelCount'))
-    object4_angle[1] = getObjAngle(sensor_dim[1], camdata.get('camFocalLength'), camdata.get('obj_04_width'), camdata.get('camHorizontalPixelCount'))
+#     object3_angle = [None, None]
+#     object3_angle[0] = getObjAngle(sensor_dim[0], camdata.get('camFocalLength'), camdata.get('obj_03_height'), camdata.get('camVerticalPixelCount'))
+#     object3_angle[1] = getObjAngle(sensor_dim[1], camdata.get('camFocalLength'), camdata.get('obj_03_width'), camdata.get('camHorizontalPixelCount'))
+# 
+#     object4_angle = [None, None]
+#     object4_angle[0] = getObjAngle(sensor_dim[0], camdata.get('camFocalLength'), camdata.get('obj_04_height'), camdata.get('camVerticalPixelCount'))
+#     object4_angle[1] = getObjAngle(sensor_dim[1], camdata.get('camFocalLength'), camdata.get('obj_04_width'), camdata.get('camHorizontalPixelCount'))
     
     # Feed data into the getDimensions function.
-    object_dim = [None, None, None, None]
-    object_dim[0] = getDimensions(camdata.get('deltaImageDist'), object1_angle[0], object2_angle[0])
-    object_dim[1] = getDimensions(camdata.get('deltaImageDist'), object1_angle[1], object2_angle[1])
-    object_dim[2] = getDimensions(camdata.get('deltaImageDist'), object3_angle[0], object4_angle[0])
-    object_dim[3] = getDimensions(camdata.get('deltaImageDist'), object3_angle[1], object4_angle[1])
+    if mode == 1:
+        object_dim = [None, None]
+        object_dim[0] = 2 * objectDist * math.tan(object1_angle[0])
+        object_dim[1] = 2 * objectDist * math.tan(object1_angle[1])
+
+    if mode == 2:
+        object_dim = [None, None]
+        object_dim[0] = getDimensions(camdata.get('deltaImageDist'), object1_angle[0], object2_angle[0])
+        object_dim[1] = getDimensions(camdata.get('deltaImageDist'), object1_angle[1], object2_angle[1])
+    # object_dim[2] = getDimensions(camdata.get('deltaImageDist'), object3_angle[0], object4_angle[0])
+    # object_dim[3] = getDimensions(camdata.get('deltaImageDist'), object3_angle[1], object4_angle[1])
 
     bagDimens = {}
     bagDimens['Height'] = abs( round(object_dim[0], 4) )
     bagDimens['Width'] = abs( round(object_dim[1], 4) )
-    bagDimens['Length'] = abs( round(object_dim[3], 4) )
+    #bagDimens['Length'] = abs( round(object_dim[3], 4) )
     
     return(bagDimens)
     
