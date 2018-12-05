@@ -28,20 +28,24 @@ def detect_and_box(model, image_path):
     # print(r['rois'])
 
 
-#     # Display boxed image
-#     img = cv2.imread(image_path)
-#     for i in range(len(r['rois'])):
-#         img = cv2.rectangle(img,(r['rois'][i][1],r['rois'][i][0]),(r['rois'][i][3],r['rois'][i][2]),(255,0,0),2)
+    # Display boxed image
+    img = cv2.imread(image_path)
+    for i in range(len(r['rois'])):
+        img = cv2.rectangle(img,(r['rois'][i][1],r['rois'][i][0]),(r['rois'][i][3],r['rois'][i][2]),(255,0,0),2)
 #     
 #     cv2.imshow('img',img)
 #     cv2.waitKey(0)
 #     cv2.destroyAllWindows()
 # 
-#     # Save output
-#     file_name = "box_{:%Y%m%dT%H%M%S}.png".format(datetime.datetime.now())
-#     cv2.imwrite(file_name, img)
+    # Save output
+    file_name = "box_{:%Y%m%dT%H%M%S}.png".format(datetime.datetime.now())
+    cv2.imwrite(file_name, img)
 
-    return r['rois']
+    mod_path = DIR + '\\' + file_name
+    print('mod_path:')
+    print(mod_path)
+
+    return r['rois'], mod_path
 
     
 def run(image_path):
@@ -66,6 +70,6 @@ def run(image_path):
     model.load_weights(weights_path, by_name=True)
 
     # Evaluate the image for bags
-    points = detect_and_box(model, image_path)
+    points, paths = detect_and_box(model, image_path)
 
-    return points
+    return points, paths

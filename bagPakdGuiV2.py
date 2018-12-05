@@ -489,7 +489,9 @@ class StartWindow(QMainWindow):
             self.bagHeight.setText(str(self.bagDimensions['Height']))
             #self.bagLength.setText(str(self.bagDimensions['Length']))
             self.bagWidth.setText(str(self.bagDimensions['Width']))
-            
+
+            # Image Paths: 1 image mode = returns path_01.  2 image mode = returns path_01 & path_02
+            print('bagDimensions Dictionary:')         
             print(self.bagDimensions)
              
             # Set up the paths to the models and labels

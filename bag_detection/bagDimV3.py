@@ -52,25 +52,25 @@ def getDimensions(dist_x, pict1_angle, pict2_angle):
 
 def getBagBox(path):
     """Function passes information to the bag objection detection module and returns the bag height and width inpixels."""
-    points = bag_box.run(path)
+    points, path = bag_box.run(path)
     #print(points)
     
     height = abs( points[0][2] - points[0][0] )
     width = abs( points[0][3] - points[0][1] )
 
     dims = [height, width]
-    print(dims)
+    #print(dims)
 
-    return dims
+    return dims, path
     
 
 def run(camdata, mode, bag1path, bag2path = 'optional' ):
     """Function runs the bag dimensional calculator."""
     
-    print(camdata)
+    #print(camdata)
     
     # Adding object height and width into the camera data dictionary [pixels].
-    obj_01_dims = getBagBox(bag1path)
+    obj_01_dims, path_01 = getBagBox(bag1path)
     camdata['obj_01_height'] = obj_01_dims[0]
     camdata['obj_01_width'] = obj_01_dims[1]
 
@@ -78,7 +78,7 @@ def run(camdata, mode, bag1path, bag2path = 'optional' ):
         objectDist = camdata['objectDist']
     
     if mode == 2:
-        obj_02_dims = getBagBox(bag2path)
+        obj_02_dims, path_02 = getBagBox(bag2path)
         camdata['obj_02_height'] = obj_02_dims[0]
         camdata['obj_02_width'] = obj_02_dims[1]
 
@@ -109,22 +109,28 @@ def run(camdata, mode, bag1path, bag2path = 'optional' ):
 #     object4_angle[1] = getObjAngle(sensor_dim[1], camdata.get('camFocalLength'), camdata.get('obj_04_width'), camdata.get('camHorizontalPixelCount'))
     
     # Feed data into the getDimensions function.
+    bagDimens = {}
+
     if mode == 1:
         object_dim = [None, None]
         object_dim[0] = 2 * objectDist * math.tan(object1_angle[0])
         object_dim[1] = 2 * objectDist * math.tan(object1_angle[1])
+        bagDimens['path_01'] = path_01
 
     if mode == 2:
         object_dim = [None, None]
         object_dim[0] = getDimensions(camdata.get('deltaImageDist'), object1_angle[0], object2_angle[0])
         object_dim[1] = getDimensions(camdata.get('deltaImageDist'), object1_angle[1], object2_angle[1])
+        bagDimens['path_02'] = path_02
     # object_dim[2] = getDimensions(camdata.get('deltaImageDist'), object3_angle[0], object4_angle[0])
     # object_dim[3] = getDimensions(camdata.get('deltaImageDist'), object3_angle[1], object4_angle[1])
 
-    bagDimens = {}
+
     bagDimens['Height'] = abs( round(object_dim[0], 4) )
     bagDimens['Width'] = abs( round(object_dim[1], 4) )
     #bagDimens['Length'] = abs( round(object_dim[3], 4) )
-    
+    #print('bagDimens:')
+    #print(bagDimens)    
+        
     return(bagDimens)
     
