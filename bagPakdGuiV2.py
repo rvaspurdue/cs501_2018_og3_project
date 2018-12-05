@@ -117,11 +117,41 @@ class StartWindow(QMainWindow):
         self.actionR2.triggered.connect(lambda: self.rotateImage(2))
         self.tb.addAction(self.actionR2)
         
+        # Define Action to Rotate Image 3 by 90 deg
+        self.actionR3 = QAction('Rotate Result 1')
+        self.actionR3.setStatusTip('Rotate Image 3 by 90 Degrees')
+        self.actionR3.triggered.connect(lambda: self.rotateImage(3))
+        self.tb.addAction(self.actionR3)
+        
+        # Define Action to Rotate Image 4 by 90 deg
+        self.actionR4 = QAction('Rotate Result 2')
+        self.actionR4.setStatusTip('Rotate Image 4 by 90 Degrees')
+        self.actionR4.triggered.connect(lambda: self.rotateImage(4))
+        self.tb.addAction(self.actionR4)
+        
         # Define Action to sync Google Drive
         self.actionSync = QAction('Sync')
         self.actionSync.setStatusTip('Sync Google Drive')
         self.actionSync.triggered.connect(self.sync)
         self.tb.addAction(self.actionSync)
+        
+        # Define Action to Insert Nicks cam
+        self.actionU1 = QAction('Nick')
+        self.actionU1.setStatusTip('Insert Nicks Cam Parameters')
+        self.actionU1.triggered.connect(lambda: self.loadCam(1))
+        self.tb.addAction(self.actionU1)
+        
+        # Define Action to Insert Eriks cam
+        self.actionU2 = QAction('Erik')
+        self.actionU2.setStatusTip('Insert Eriks Cam Parameters')
+        self.actionU2.triggered.connect(lambda: self.loadCam(2))
+        self.tb.addAction(self.actionU2)
+        
+        # Define Action to Insert Eriks cam
+        self.actionU3 = QAction('Ryan')
+        self.actionU3.setStatusTip('Insert Ryans Cam Parameters')
+        self.actionU3.triggered.connect(lambda: self.loadCam(3))
+        self.tb.addAction(self.actionU3)
         
         # Set local folder path where google drive contents are downloaded
         self.gdrive = os.path.join(os.getcwd(),'GoogleDriveContents')
@@ -155,6 +185,22 @@ class StartWindow(QMainWindow):
         self.lb2=QLabel(self)
         self.lb2.move(860,50)
         self.lb2.setStatusTip('Image 2')
+        
+                # Define label for image 3 (lb) and filename label (lf) 
+        self.lf3=QLabel(self)
+        self.lf3.move(450,470)
+        self.lf3.setMinimumWidth(400)
+        self.lb3=QLabel(self)
+        self.lb3.move(450,500)
+        self.lb3.setStatusTip('Result 1')
+        
+        # Define label for image 4 (lb) and filename label (lf) 
+        self.lf4=QLabel(self)
+        self.lf4.move(860,470)
+        self.lf4.setMinimumWidth(400)
+        self.lb4=QLabel(self)
+        self.lb4.move(860,500)
+        self.lb4.setStatusTip('Result 2')
         
         self.imgPos = 1
         self.imageCount = 0
@@ -326,7 +372,9 @@ class StartWindow(QMainWindow):
             self.camLb1.setText('Object Distance [ft]')
             self.mode = 1
             self.imgPos = 1
+            self.lf2.clear()
             self.lb2.clear()
+            self.lb4.clear()
         else:
             self.actionPm.setChecked(False)
             self.actionDm.setChecked(True)
@@ -345,7 +393,9 @@ class StartWindow(QMainWindow):
             self.camLb1.setText('Object Distance [ft]')
             self.mode = 1
             self.imgPos = 1
-            self.lb2.clear()            
+            self.lf2.clear()
+            self.lb2.clear()  
+            self.lb4.clear()
     
     def chkCamInput(self):
         if (self.q1.text() and self.q2.text() and self.q3.text() and self.q4.text() \
@@ -453,6 +503,36 @@ class StartWindow(QMainWindow):
             self.pixmap2 = self.pixmap2.scaled(400,400,Qt.KeepAspectRatio)            
             self.lb2.resize(self.pixmap2.width(),self.pixmap2.height())
             self.lb2.setPixmap(self.pixmap2)
+        elif n==3:
+            tr = QTransform().rotate(90)
+            self.pixmap3 = self.pixmap3.transformed(tr,Qt.SmoothTransformation)
+            self.pixmap3 = self.pixmap3.scaled(400,400,Qt.KeepAspectRatio)            
+            self.lb3.resize(self.pixmap3.width(),self.pixmap3.height())
+            self.lb3.setPixmap(self.pixmap3)
+        elif n==4:
+            tr = QTransform().rotate(90)
+            self.pixmap4 = self.pixmap4.transformed(tr,Qt.SmoothTransformation)
+            self.pixmap4 = self.pixmap4.scaled(400,400,Qt.KeepAspectRatio)            
+            self.lb4.resize(self.pixmap4.width(),self.pixmap4.height())
+            self.lb4.setPixmap(self.pixmap4) 
+    
+    # Define load cam data
+    def loadCam(self,n):
+        if n==1: 
+            self.q2.setText('0.00467')
+            self.q3.setText('4048.0')
+            self.q4.setText('3036.0')
+            self.q5.setText('1.55e-6')
+        elif n==2:
+            self.q2.setText('0.00467')
+            self.q3.setText('4032.0')
+            self.q4.setText('3032.0')
+            self.q5.setText('1.55e-6')
+        else:
+            self.q2.setText('0.00467')
+            self.q3.setText('4048.0')
+            self.q4.setText('3036.0')
+            self.q5.setText('1.55e-6')            
             
     # Function that is run when the calculate button is clicked    
     def runBagpakd(self):
@@ -461,6 +541,7 @@ class StartWindow(QMainWindow):
                 self.camData['objectDist']=float(self.q1.text())
             else:
                 self.camData['deltaImageDist']=float(self.q1.text())
+                
             self.camData['camFocalLength']=float(self.q2.text())
             self.camData['camVerticalPixelCount']=float(self.q3.text())
             self.camData['camHorizontalPixelCount']=float(self.q4.text())
@@ -493,7 +574,36 @@ class StartWindow(QMainWindow):
             # Image Paths: 1 image mode = returns path_01.  2 image mode = returns path_01 & path_02
             print('bagDimensions Dictionary:')         
             print(self.bagDimensions)
-             
+            print(self.mode)
+            
+            if self.mode ==1:
+                self.lb3.clear()
+                self.pixmap3 = QPixmap(self.bagDimensions['path_01'])            
+                self.pixmap3 = self.pixmap3.scaled(400,400,Qt.KeepAspectRatio)            
+                self.lb3.resize(self.pixmap3.width(),self.pixmap3.height())
+                self.lb3.setPixmap(self.pixmap3)
+                
+            elif self.mode == 2:
+                print('Im here')
+                self.lb3.clear()
+                self.lb4.clear()
+                self.pixmap3 = QPixmap(self.bagDimensions['path_01'])
+                print('Im here 2')
+                print('1*************')
+                print(self.bagDimensions['path_01'])
+                self.pixmap3 = self.pixmap3.scaled(400,400,Qt.KeepAspectRatio)            
+                self.lb3.resize(self.pixmap3.width(),self.pixmap3.height())
+                self.lb3.setPixmap(self.pixmap3)
+                
+                self.pixmap4 = QPixmap(self.bagDimensions['path_02'])   
+                print('2*************')
+                print(self.bagDimensions['path_02'])
+                self.pixmap4 = self.pixmap4.scaled(400,400,Qt.KeepAspectRatio)            
+                self.lb4.resize(self.pixmap4.width(),self.pixmap4.height())
+                self.lb4.setPixmap(self.pixmap4)
+            else:
+                pass
+#############             
             # Set up the paths to the models and labels
             models = ["bag_inceptionv3.model", "bagclassifier.model", "bag_xception.model"]
             path = "./bag_classifier"
@@ -515,9 +625,19 @@ class StartWindow(QMainWindow):
             # assign the final classification
             self.bagClass = classification
             print(self.bagClass)
+            
+            weightAvg = {'backpack':'10 lb',
+                         'carryon':'16 lb',
+                         'dufflebag':'12 lb',
+                         'purse':'5 lb'}
+            
+            if self.bagClass in weightAvg:
+                weightStr = '   Weight = ' + weightAvg[self.bagClass]
+            else:
+                weightStr = ' '
 
             # update the GUI text
-            self.bagClassification.setText(self.bagClass + " " + str(round(probabilities_tup[0],1)) + "%")
+            self.bagClassification.setText(self.bagClass + " " + str(round(probabilities_tup[0],1)) + "%" + weightStr)
             
             # Show result frame
             self.dimFrame.show()
