@@ -39,7 +39,9 @@ def detect_and_box(model, image_path):
 # 
     # Save output
     file_name = "box_{:%Y%m%dT%H%M%S}.png".format(datetime.datetime.now())
-    cv2.imwrite(file_name, img)
+    full_file_path = os.path.join(DIR,file_name)
+    print('ffp',full_file_path)
+    cv2.imwrite(full_file_path, img)
 
     mod_path = DIR + '\\' + file_name
     print('mod_path:')
