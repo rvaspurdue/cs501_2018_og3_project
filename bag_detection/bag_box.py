@@ -54,7 +54,6 @@ def color_splash(image, mask):
     """Apply color splash effect.
     image: RGB image [height, width, 3]
     mask: instance segmentation mask [height, width, instance count]
-
     Returns result image.
     """
     # Make a grayscale copy of the image. The grayscale copy still
@@ -82,7 +81,8 @@ def detect_and_color_splash(masks, image_path=None):
     splash = color_splash(image, masks)
     # Save output
     file_name = "splash_{:%Y%m%dT%H%M%S}.png".format(datetime.datetime.now())
-    skimage.io.imsave(file_name, splash)
+    full_file_path = os.path.join(DIR,file_name)
+    skimage.io.imsave(full_file_path, splash)
 
     splash_path = DIR + '\\' + file_name
 
