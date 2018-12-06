@@ -113,8 +113,8 @@ def run(camdata, mode, bag1path, bag2path = 'optional' ):
 
     if mode == 1:
         object_dim = [None, None]
-        object_dim[0] = 2 * objectDist * math.tan(object1_angle[0])
-        object_dim[1] = 2 * objectDist * math.tan(object1_angle[1])
+        object_dim[0] = 2 * 0.305 * objectDist * math.tan(object1_angle[0])
+        object_dim[1] = 2 * 0.305 * objectDist * math.tan(object1_angle[1])
         bagDimens['path_01'] = path_01
 
     if mode == 2:
