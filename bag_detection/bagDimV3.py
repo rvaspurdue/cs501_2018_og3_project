@@ -59,7 +59,7 @@ def getBagBox(path):
     width = abs( points[0][3] - points[0][1] )
 
     dims = [height, width]
-    #print(dims)
+    print(dims)
 
     return dims, path
     
