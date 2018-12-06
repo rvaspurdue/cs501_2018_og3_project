@@ -25,7 +25,7 @@ def detect_and_box(model, image_path):
     # Detect objects
     r = model.detect([image], verbose=1)[0]
 
-    # print(r['rois'])
+    print(r['rois'])
 
 
     # Display boxed image
