@@ -43,7 +43,7 @@ def detect_and_box(model, image_path):
 #    print('ffp',full_file_path)
 #    cv2.imwrite(full_file_path, img)
 
-    mod_path = DIR + '\\' + file_name
+    mod_path = DIR + os.path.sep + file_name
     print('mod_path:')
     print(mod_path)
 
@@ -84,7 +84,7 @@ def detect_and_color_splash(masks, image_path=None):
     full_file_path = os.path.join(DIR,file_name)
     skimage.io.imsave(full_file_path, splash)
 
-    splash_path = DIR + '\\' + file_name
+    splash_path = DIR + os.path.sep + file_name
 
     return splash_path
 # #############################################################
